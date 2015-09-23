@@ -1,9 +1,19 @@
 package main
 
 
-import "fmt"
+import (
+    "net/http"
+    "./app/routes"
+)
 
-func main (){
+
+func main() {
     
-    fmt.Println("ola mundo")
+    fs := http.FileServer(http.Dir("public"))
+    http.Handle("/public/", http.StripPrefix("/public/", fs))
+    
+    routes.Include()
+    
+    http.ListenAndServe("0.0.0.0:8080", nil)
+        
 }
