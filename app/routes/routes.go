@@ -1,15 +1,17 @@
 package routes
 
 import (
-	"net/http"
-
 	"../controllers"
+
+	"github.com/julienschmidt/httprouter"
 )
 
-func Include() {
+func Include() *httprouter.Router {
+	r := httprouter.New()
 
-	http.HandleFunc("/", controllers.Show)
-	http.HandleFunc("/index", controllers.Index)
-	http.HandleFunc("/teste", controllers.Teste)
+	r.GET("/frase/:id", controllers.GetFrase)
 
+	r.POST("/frase", controllers.CreateFrase)
+
+	return r
 }
