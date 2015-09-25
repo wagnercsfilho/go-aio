@@ -1,7 +1,8 @@
 package routes
 
 import (
-	"../controllers"
+	. "../controllers"
+	"gopkg.in/mgo.v2"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -9,9 +10,21 @@ import (
 func Include() *httprouter.Router {
 	r := httprouter.New()
 
-	r.GET("/frase/:id", controllers.GetFrase)
+	fraseController := NewFraseController(getSession())
 
-	r.POST("/frase", controllers.CreateFrase)
+	r.GET("/frase/:id", fraseController.GetBy)
+	r.GET("/frase", fraseController.GetAll)
+	r.POST("/frase", fraseController.Create)
+	r.DELETE("/frase/:id", fraseController.Delete)
 
 	return r
+}
+
+func getSession() *mgo.Session {
+	s, err := mgo.Dial("mongodb://localhost")
+
+	if err != nil {
+		panic(err)
+	}
+	return s
 }

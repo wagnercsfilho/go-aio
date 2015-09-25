@@ -8,4 +8,3 @@ type (
 		Descricao string        `json:"descricao" bson:"descricao"`
 	}
 )
-type Frases []Frase

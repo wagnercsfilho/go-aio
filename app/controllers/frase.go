@@ -20,11 +20,11 @@ type (
 	}
 )
 
-func NewFraseController() *FraseController {
-	return &FraseController{}
+func NewFraseController(s *mgo.Session) *FraseController {
+	return &FraseController{s}
 }
 
-func (fc FraseController) CreateFrase(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (fc FraseController) Create(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	f := models.Frase{}
 
 	json.NewDecoder(r.Body).Decode(&f)
@@ -37,7 +37,20 @@ func (fc FraseController) CreateFrase(w http.ResponseWriter, r *http.Request, p 
 
 }
 
-func (fc FraseController) GetFrase(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (fc FraseController) GetAll(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+
+	var lista []models.Frase
+
+	if err := fc.session.DB("db_aio").C("frases").Find(nil).All(&lista); err != nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	response.Json(w, lista)
+
+}
+
+func (fc FraseController) GetBy(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	id := p.ByName("id")
 
@@ -53,8 +66,26 @@ func (fc FraseController) GetFrase(w http.ResponseWriter, r *http.Request, p htt
 		w.WriteHeader(404)
 		return
 	}
-	fj, _ := json.Marshal(f)
+	response.Json(w, f)
 
-	response.Json(w, fj)
+}
+
+func (fc FraseController) Delete(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+
+	id := p.ByName("id")
+
+	if !bson.IsObjectIdHex(id) {
+		w.WriteHeader(404)
+		return
+	}
+
+	oid := bson.ObjectIdHex(id)
+
+	if err := fc.session.DB("db_aio").C("frases").RemoveId(oid); err != nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	w.WriteHeader(200)
 
 }
