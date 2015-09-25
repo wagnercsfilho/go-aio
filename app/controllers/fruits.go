@@ -1,26 +1,29 @@
 package controllers
 
 import (
-    "net/http"
-    "../../bin/response"
-     "../models"
+	"net/http"
+
+	"../../bin/response"
+	"../models"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-    todos := models.Todos{
-        models.Todo{Name: "Write presentation"},
-        models.Todo{Name: "Host meetup"},
-    }
+	todos := models.Todos{
+		models.Todo{Name: "Write presentation"},
+		models.Todo{Name: "Host meetup"},
+	}
 
-    response.View(w, "fruits/index", todos)
+	response.View(w, "fruits/index", todos)
 }
 
 func Show(w http.ResponseWriter, r *http.Request) {
-    todos := models.Todos{
-        models.Todo{Name: "Write presentation"},
-        models.Todo{Name: "Host meetup"},
-    }
-
-    response.Json(w, todos)
+	todos := models.Todos{
+		models.Todo{Name: "Write presentation"},
+		models.Todo{Name: "Host meetup"},
+	}
+	response.Json(w, todos)
 }
 
+func Teste(w http.ResponseWriter, r *http.Request) {
+	response.Json(w, "{teste : false}")
+}
