@@ -1,15 +1,16 @@
 package routes
 
 import (
-	. "../controllers"
+	"net/http"
+	. "go-aio/app/controllers"
 	"gopkg.in/mgo.v2"
-
 	"github.com/julienschmidt/httprouter"
 )
 
 func Include() *httprouter.Router {
 	r := httprouter.New()
 
+  r.ServeFiles("/public/*filepath", http.Dir("../go-aio/public/"))
 	fraseController := NewFraseController(getSession())
 	homeController := NewHomeController()
 
